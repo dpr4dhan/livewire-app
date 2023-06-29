@@ -10,6 +10,13 @@ class SayHi extends Component
 
     public Post $post;
 
+    protected $listeners = ['foo' => '$refresh'];
+
+
+    public function  emitFoo(){
+        $this->emitUp('foo');
+    }
+
     public function mount(Post $post) :void
     {
         $this->post = $post;

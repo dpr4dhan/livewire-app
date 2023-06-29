@@ -7,6 +7,6 @@
         </div>
     @endforeach
         <hr>
-        <button wire:click="$refresh">Refresh</button>
         {{ now() }}
+        <button wire:click="$emit('refreshChildren')">Refresh Children</button>
 </div>

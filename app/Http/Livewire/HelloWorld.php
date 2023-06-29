@@ -11,10 +11,11 @@ class HelloWorld extends Component
 {
 
     public $posts;
+    protected $listeners = ['foo' => '$refresh'];
 
     public function mount($name) :void
     {
-        $this->posts = Post::all();
+        $this->posts = Post::limit(5)->get();
     }
 //
 //    public function hydrate() :void
@@ -32,6 +33,11 @@ class HelloWorld extends Component
         $post->delete();
         $this->posts = Post::all();
     }
+
+//    public function refreshChildren()
+//    {
+//        $this->emit('refreshChildren', 'foo');
+//    }
 
     public function render() : View
     {
