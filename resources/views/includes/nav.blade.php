@@ -19,7 +19,13 @@
         </div>
         <!-- Page content here -->
         <div class="container mx-auto px-4">
-            @yield('content')
+            <!-- alert -->
+            <x-notification />
+            <!-- alert -->
+            <div class="py-8">
+                @yield('content')
+            </div>
+
         </div>
     </div>
     <div class="drawer-side">
