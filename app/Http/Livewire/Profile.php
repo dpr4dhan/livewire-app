@@ -10,15 +10,28 @@ class Profile extends Component
 {
     use WithFileUploads;
     public string $username = '';
-    public string $about = '';
+    public ?string $about = '';
+    public ?string $birthday = '';
+    public $newAvatar;
+    public $newAvatars = [];
+
 
     //lifecycle hook
     public function mount() :void
     {
         $this->username = auth()->user()->username;
         $this->about = auth()->user()->about;
+        $this->birthday = auth()->user()->birthday;
     }
 
+    /**
+     * updated{propertyName}
+     * @return void
+     */
+    public function updatedNewAvatar() :void
+    {
+        $this->validate(['newAvatar' => 'image|max:2000']);
+    }
     //lifecycle hook
 
     public function save() :void
@@ -26,9 +39,18 @@ class Profile extends Component
         $profileData = $this->validate([
             'username' => 'required|max:24',
             'about' => 'max:140',
-//            'photo' => 'max:2000'
+            'birthday' => 'date|date_format:Y-m-d',
+            'newAvatar' => 'image|max:2000'
         ]);
-        auth()->user()->update($profileData);
+        $filename = $this->newAvatar->store('/', 'avatars');
+        auth()->user()->update(
+            [
+                'username' => $this->username,
+                'about' => $this->about,
+                'birthday' => $this->birthday,
+                'avatar' => $filename,
+            ]
+        );
 //        $this->dispatchBrowserEvent('notify', 'Profile updated successfully!');
 //        session()->flash('notify-saved');
         $this->emitSelf('notify-saved');

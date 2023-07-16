@@ -7,15 +7,16 @@
         type="file"
         class="file-input file-input-bordered {{ $className ?: '' }}"
         {{ $attributes }}
+        multiple
     />
-    <div class="avatar w-2/4  max-w-xs">
+    @if($tempFile)
+    @foreach($tempFile as $file)
+    <div class="avatar max-w-xs">
         <div class="w-12 rounded-full">
-            @if($tempFile)
-                <img src="{{ $tempFile->temporaryUrl() }}" alt="Profile Photo"/>
-            @else
-                <img src="{{ auth()->user()->avatarUrl() }}" alt="Profile Photo"/>
-            @endif
-        </div>
+                <img src="{{ $file->temporaryUrl() }}" alt="Profile Photo"/>
+         </div>
     </div>
+    @endforeach
+    @endif
 
 </div>

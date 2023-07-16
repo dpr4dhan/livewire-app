@@ -10,10 +10,17 @@
             </div>
             <div class="flex-1 px-2 mx-2 text-base-100">LWApp</div>
             <div class="flex-none hidden lg:block">
-                <ul class="menu menu-horizontal  text-base-100">
+                <ul class="menu menu-horizontal text-base-100">
                     <!-- Navbar menu content here -->
                     <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ route('profile') }}">Profile</a></li>
+                    <li class="text-center">
+                        <div class="avatar">
+                            <div class="w-8 rounded-full">
+                                <img src="{{ auth()->user()->avatarUrl() }}" alt="Profile Photo"/>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

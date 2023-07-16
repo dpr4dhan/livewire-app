@@ -2,10 +2,11 @@
     'label',
     'for',
     'error' => false,
-    'helpText' => false
+    'helpText' => false,
+    'className' => false
 ])
 
-<div class="form-control w-full max-w-xs">
+<div class="form-control {{ $className ?: '' }}">
     <label class="label" for="{{ $for }}">
         <span class="label-text">{{ $label }}</span>
     </label>
