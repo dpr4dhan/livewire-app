@@ -4,6 +4,7 @@ use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Auth\Register;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\Profile;
+use App\Http\Livewire\Transaction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,7 @@ Route::redirect('/', 'dashboard');
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
+    Route::get('/transaction', Transaction::class)->name('transaction');
 });
 
 Route::middleware('guest')->group(function() {

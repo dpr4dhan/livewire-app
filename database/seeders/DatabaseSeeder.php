@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
              'username' => 'dpr4dhan',
              'password' => Hash::make('secret')
          ]);
+         \App\Models\Transaction::factory(1000)->create();
     }
 }
