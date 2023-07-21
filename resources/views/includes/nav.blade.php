@@ -1,48 +1,55 @@
-<div class="drawer">
-    <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content flex flex-col">
-        <!-- Navbar -->
-        <div class="w-full navbar bg-primary">
-            <div class="flex-none lg:hidden">
-                <label for="my-drawer-3" class="btn btn-square btn-ghost">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </label>
+<div class="">
+
+    <div class="navbar bg-neutral text-neutral-content">
+        <div class="navbar-start">
+            <div class="drawer">
+                <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+                <div class="drawer-content">
+                    <!-- Page content here -->
+                    <label for="my-drawer" class="btn btn-ghost btn-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                    </label>
+                </div>
+                <div class="drawer-side z-[1]">
+                    <label for="my-drawer" class="drawer-overlay"></label>
+
+                        @include('includes.menu')
+
+
+                </div>
             </div>
-            <div class="flex-1 px-2 mx-2 text-base-100">LWApp</div>
-            <div class="flex-none hidden lg:block">
-                <ul class="menu menu-horizontal text-base-100">
-                    <!-- Navbar menu content here -->
-                    <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ route('profile') }}">Profile</a></li>
-                    <li class="text-center">
-                        <div class="avatar">
-                            <div class="w-8 rounded-full">
-                                <img src="{{ auth()->user()->avatarUrl() }}" alt="Profile Photo"/>
-                            </div>
-                        </div>
+        </div>
+        <div class="navbar-center">
+            <a class="btn btn-ghost normal-case text-xl">LWApp</a>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img src="{{ auth()->user()->avatarUrl() }}" />
+                    </div>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-neutral">
+                    <li>
+                        <a class="justify-between" href="{{ route('profile') }}">
+                            Profile
+                        </a>
                     </li>
+                    <li><a>Logout</a></li>
                 </ul>
             </div>
         </div>
-        <!-- Page content here -->
-        <div class="container mx-auto px-4">
-            <!-- alert -->
-            <x-notification />
-            <!-- alert -->
-            <div class="py-8">
-                @yield('content')
-            </div>
-
-        </div>
     </div>
-    <div class="drawer-side">
-        <label for="my-drawer-3" class="drawer-overlay"></label>
-        <ul class="menu p-4 w-80 h-full bg-primary text-base-100">
-            <!-- Sidebar content here -->
-            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ route('profile') }}">Profile</a></li>
-
-        </ul>
+    <div class="container mx-auto px-4 py-8">
+        <div class="card w-full h-screen bg-base-100 shadow-xl">
+            @yield('content')
+        </div>
 
     </div>
 </div>
+<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+    <div>
+        <p>Copyright © 2023 - All right reserved by ACME Industries Ltd</p>
+    </div>
+</footer>
+

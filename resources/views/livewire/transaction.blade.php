@@ -1,4 +1,4 @@
-<div>
+<div class="card-body">
     <h2 class="card-title">Transaction List</h2>
     <div class="right-end-px">
         <x-input.group className="w-full max-w-xs" label="" for="search">

@@ -1,6 +1,7 @@
 @props([
     'leadingAddOn' =>false,
-    'placeholder' => false
+    'placeholder' => false,
+    'className'
     ])
 @if($leadingAddOn)
     <div class="join">
@@ -10,7 +11,7 @@
 @endif
     <input
         type="text"
-        class="input input-bordered w-full max-w-xs {{ $leadingAddOn ? 'join-item' : '' }}"
+        class="input input-bordered w-full max-w-xs {{ $leadingAddOn ? 'join-item' : '' }} {{ $className ?? ''}}"
         @if($placeholder)
             placeholder="{{$placeholder}}"
         @endif

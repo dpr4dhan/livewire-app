@@ -25,7 +25,7 @@
     @livewireStyles
     @stack('styles')
 </head>
-<body>
+<body class="bg-gray-100">
 
     @include('includes.nav')
 
