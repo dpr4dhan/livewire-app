@@ -8,8 +8,12 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.2.1/dist/full.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.19/dist/sweetalert2.min.css">
+
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
 
     <script>
         tailwind.config = {
@@ -30,6 +34,19 @@
     @include('includes.nav')
 
     @livewireScripts
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.19/dist/sweetalert2.all.min.js"></script>
     @stack('scripts')
+    <script>
+        const notyf = new Notyf({duration:3000,position:{'x': 'right', 'y':'top'}, dismissible: true});
+
+        Livewire.on('notify-success', (msg) => {
+            notyf.success(msg);
+        })
+
+        Livewire.on('notify-error', (msg) => {
+            notyf.error(msg);
+        })
+    </script>
 </body>
 </html>

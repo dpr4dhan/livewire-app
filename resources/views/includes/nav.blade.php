@@ -14,13 +14,11 @@
                     <label for="my-drawer" class="drawer-overlay"></label>
 
                         @include('includes.menu')
-
-
                 </div>
             </div>
         </div>
         <div class="navbar-center">
-            <a class="btn btn-ghost normal-case text-xl">LWApp</a>
+            <a class="btn btn-ghost normal-case text-xl">LW CMS</a>
         </div>
         <div class="navbar-end">
             <div class="dropdown dropdown-end">
@@ -41,7 +39,10 @@
         </div>
     </div>
     <div class="container mx-auto px-4 py-8">
-        <div class="card w-full h-screen bg-base-100 shadow-xl">
+        @include('includes.notification')
+
+
+        <div class="card w-full bg-base-100 shadow-xl">
             @yield('content')
         </div>
 
@@ -49,7 +50,7 @@
 </div>
 <footer class="footer footer-center p-4 bg-base-300 text-base-content">
     <div>
-        <p>Copyright © 2023 - All right reserved by ACME Industries Ltd</p>
+        <p>Copyright © 2023 - All right reserved by <a class="link-success" target="_blank" href="https://dhirajpradhan.com.np">Dhiraj Pradhan</a></p>
     </div>
 </footer>
 
