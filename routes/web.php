@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Livewire\Auth\Login;
+use App\Http\Livewire\Auth\Logout;
 use App\Http\Livewire\Auth\Register;
+use App\Http\Livewire\Backend\ChangePassword;
+use App\Http\Livewire\Backend\Permission;
+use App\Http\Livewire\Backend\Role;
 use App\Http\Livewire\Backend\User;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\Profile;
@@ -24,9 +28,15 @@ Route::redirect('/', 'dashboard');
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
+    Route::get('/change-password', ChangePassword::class)->name('change-password');
+    Route::get('/logout', Logout::class)->name('logout');
+
     Route::get('/transaction', Transaction::class)->name('transaction');
 
-    Route::get('/users', User::class)->name('user');
+    Route::get('/users', User::class)->name('users');
+    Route::get('/roles', Role::class)->name('roles');
+    Route::get('/permissions', Permission::class)->name('permissions');
+
 });
 
 Route::middleware('guest')->group(function() {

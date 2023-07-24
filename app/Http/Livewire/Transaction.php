@@ -20,6 +20,11 @@ class Transaction extends Component
     public string $sortOrder = 'asc';
 
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
 //        dd($this->sortOrder);

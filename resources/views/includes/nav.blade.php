@@ -1,4 +1,4 @@
-<div class="">
+<div class="min-h-screen">
 
     <div class="navbar bg-neutral text-neutral-content">
         <div class="navbar-start">
@@ -33,7 +33,12 @@
                             Profile
                         </a>
                     </li>
-                    <li><a>Logout</a></li>
+                    <li>
+                        <a class="justify-between" href="{{ route('change-password') }}">
+                            Change Password
+                        </a>
+                    </li>
+                    <li><a  href="{{ route('logout') }}">Logout</a></li>
                 </ul>
             </div>
         </div>

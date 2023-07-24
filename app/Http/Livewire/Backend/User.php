@@ -152,8 +152,6 @@ class User extends Component
         return $query->where('name', 'like', '%'.$search.'%');
         })->orderBy($this->sortColumn, $this->sortOrder)->paginate(10);
 
-        $formMode = $this->mode;
-        $userId = $this->userId;
         return view('livewire.backend.user.list', compact('users'))->extends('layouts.app');
     }
 }

@@ -11,7 +11,7 @@
 @endif
     <input
         type="text"
-        class="input input-bordered w-full max-w-xs {{ $leadingAddOn ? 'join-item' : '' }} {{ $className ?? ''}}"
+        class="input input-bordered {{ $leadingAddOn ? 'join-item' : '' }} {{ $className ?? ''}}"
         @if($placeholder)
             placeholder="{{$placeholder}}"
         @endif

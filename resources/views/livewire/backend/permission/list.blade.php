@@ -3,9 +3,9 @@
         @include('includes.message')
     </div>
     <div class="flex justify-between">
-        <h2 class="card-title">User List</h2>
+        <h2 class="card-title">Permissions List</h2>
         <button class="btn btn-success btn-sm" type="button">
-            <label for="userModal"><i class="fa-solid fa-plus"></i> Create</label>
+            <label for="permissionModal"><i class="fa-solid fa-plus"></i> Create</label>
         </button>
     </div>
 
@@ -23,32 +23,22 @@
         <x-table.head>
             <tr>
                 <th>SN</th>
-                <x-table.headcell wire:click="sortBy('name')" sort="true" :order="$sortColumn === 'name' ? $sortOrder : null">Name</x-table.headcell>
-                <x-table.headcell wire:click="sortBy('email')" sort="true" :order="$sortColumn === 'email' ? $sortOrder : null">Email</x-table.headcell>
-                <x-table.headcell wire:click="sortBy('username')" sort="true" :order="$sortColumn === 'username' ? $sortOrder : null">Username</x-table.headcell>
-                <x-table.headcell>Avatar</x-table.headcell>
+                <x-table.headcell wire:click="sortBy('title')" sort="true" :order="$sortColumn === 'title' ? $sortOrder : null">Title</x-table.headcell>
+                <x-table.headcell wire:click="sortBy('description')" sort="true" :order="$sortColumn === 'description' ? $sortOrder : null">Description</x-table.headcell>
                 <x-table.headcell>Actions</x-table.headcell>
             </tr>
         </x-table.head>
         <x-table.body>
             @php $i = 1; @endphp
-            @foreach($users as $user)
+            @foreach($permissions as $permission)
                 <tr>
                     <td>{{ $i++ }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->username }}</td>
+                    <td>{{ $permission->title }}</td>
+                    <td>{{ $permission->description }}</td>
                     <td>
-                        <div class="avatar">
-                            <div class="w-10 rounded-full">
-                                <img src="{{ $user->avatarUrl() }}" />
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="flex justify-center gap-1">
+                        <div class="flex gap-1">
                             <button  class="btn btn-ghost text-primary" >
-                                <label for="userModal" wire:click="editUser('{{ $user->id }}')">
+                                <label for="permissionModal" wire:click="edit('{{ $permission->id }}')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </label>
                             </button>
@@ -62,7 +52,7 @@
                                           showCancelButton: true
                                         }).then(function(evt){
                                             if(evt.isConfirmed){
-                                                Livewire.emit('deleteUser', '{{ $user->id}}');
+                                                Livewire.emit('deletePermission', '{{ $permission->id}}');
                                             }
                                         });
                                     "
@@ -77,8 +67,8 @@
         </x-table.body>
     </x-table.frame>
     <div class="mt-4">
-        {{ $users->links() }}
+        {{ $permissions->links() }}
     </div>
 
-    @include('livewire.backend.user.form')
+    @include('livewire.backend.permission.form')
 </div>
