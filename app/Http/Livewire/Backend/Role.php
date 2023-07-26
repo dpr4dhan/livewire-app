@@ -3,12 +3,15 @@
 namespace App\Http\Livewire\Backend;
 
 use App\Models\PermissionModel;
+use App\Models\RoleHasPermissionModel;
 use App\Models\RoleModel;
 use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
@@ -31,6 +34,8 @@ class Role extends Component
     public string $sortColumn = 'title';
     public string $sortOrder = 'asc';
 
+    public array $assignedPermissions = [];
+
     public Collection $permissions;
 
     /**
@@ -41,6 +46,7 @@ class Role extends Component
     {
         $this->mode = 'create';
         $this->title = $this->description = '';
+        $this->assignedPermissions = [];
     }
 
     /**
@@ -117,10 +123,43 @@ class Role extends Component
         }
     }
 
-
-    public function fetchAssignedPermissions() :void
+    /**
+     * Fetches assigned permission along with not assigned permissions
+     * @param RoleModel $role
+     * @return void
+     */
+    public function fetchAssignedPermissions(RoleModel $role) :void
     {
+        $this->roleId = $role->id;
+        $this->assignedPermissions = $role->assignedPermissions->pluck('id')->toArray();
         $this->permissions = PermissionModel::get();
+    }
+
+    public function assignPermission(RoleModel $role): void
+    {
+        try{
+            DB::beginTransaction();
+            $role->roleHasPermissions()->delete();
+
+            $permissionData = [];
+            foreach($this->assignedPermissions as $permission)
+            {
+                $permissionData[] = [
+                                    'id' => Str::uuid(),
+                                    'role_id' => $role->id,
+                                    'permission_id' => $permission
+                                    ];
+            }
+            RoleHasPermissionModel::insert($permissionData);
+
+            DB::commit();
+            $this->emit('notify-success','Permission assigned successfully');
+        }catch(\Exception $ex){
+            dd($ex->getMessage());
+            DB::rollBack();
+            Log::error($ex);
+            $this->emit('notify-error', 'Error occurred while assigning permissions');
+        }
     }
 
     /**

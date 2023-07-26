@@ -37,7 +37,7 @@
                     <td>{{ $role->title }}</td>
                     <td>{{ $role->description }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm" wire:click="fetchAssignedPermissions">
+                        <button type="button" class="btn btn-primary btn-sm" wire:click="fetchAssignedPermissions('{{ $role->id }}')">
                             <label for="assignPermissionModal">
                                 Permissions
                             </label>
