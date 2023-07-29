@@ -21,8 +21,8 @@
                         </x-input.group>
                     </div>
                     <div>
-                        <x-input.group className="w-full" label="Description" for="description" :error="$errors->first('description')">
-                            <x-input.textarea wire:model="description" id="description" name="description"/>
+                        <x-input.group className="w-full" label="Status" labelClassName="cursor-pointer" for="Status" :error="$errors->first('status')">
+                            <x-input.toggle wire:model="status" id="status" name="status"/>
                         </x-input.group>
                     </div>
 

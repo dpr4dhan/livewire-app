@@ -2,11 +2,17 @@
 
 namespace App\Http\Livewire\Backend;
 
+use App\Models\RoleModel;
 use App\Models\Transaction as TransactionModel;
 use App\Models\User as UserModel;
+use App\Models\UserHasRoleModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
@@ -15,7 +21,7 @@ use Livewire\WithPagination;
 
 class User extends Component
 {
-    use WithPagination;
+    use WithPagination, AuthorizesRequests;
 
     protected $listeners = ['deleteUser' => 'deleteUser'];
 
@@ -31,6 +37,10 @@ class User extends Component
     public string $sortColumn = 'name';
     public string $sortOrder = 'asc';
 
+    public array $assignedRoles = [];
+
+    public Collection $roles;
+
 
     /**
      * Resets Form Modal Fields
@@ -40,6 +50,7 @@ class User extends Component
     {
         $this->mode = 'create';
         $this->name = $this->username = $this->password = $this->email = $this->userId = '';
+        $this->assignedRoles = [];
     }
 
     /**
@@ -49,7 +60,7 @@ class User extends Component
      */
     public function storeUser(): void
     {
-
+        $this->authorize('create_new_user');
         $this->validate([
             'name' => 'required',
             'username' => 'required|max:25|unique:users,username|alpha_num:ascii',
@@ -125,6 +136,34 @@ class User extends Component
         }
     }
 
+
+    public function fetchAssignedRoles(UserModel $user) :void
+    {
+        $this->userId = $user->id;
+        $this->assignedRoles = $user->roles()->pluck('id')->toArray();
+        $this->roles = RoleModel::get();
+    }
+
+    public function assignRoles(UserModel $user) :void
+    {
+        try{
+            DB::beginTransaction();
+
+            $assignedRoles = array_map(function($roleId){
+                return RoleModel::find($roleId);
+            }, $this->assignedRoles);
+            $user->syncRoles( $assignedRoles);
+
+            DB::commit();
+            $this->emit('notify-success', 'Successfully assigned roles');
+        }catch(\Exception $ex)
+        {
+            Log::error($ex);
+            DB::rollBack();
+            $this->emit('notify-error', 'Error occurred while assigning roles');
+        }
+    }
+
     /**
      * SortBy logic for Listing page
      * @param $field
@@ -148,6 +187,7 @@ class User extends Component
      */
     public function render(): View
     {
+        $this->authorize('view_user_list');
         $users = UserModel::when($this->search,  function( Builder $query, string $search){
         return $query->where('name', 'like', '%'.$search.'%');
         })->orderBy($this->sortColumn, $this->sortOrder)->paginate(10);

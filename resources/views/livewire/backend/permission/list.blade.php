@@ -4,9 +4,11 @@
     </div>
     <div class="flex justify-between">
         <h2 class="card-title">Permissions List</h2>
+        @can('create_new_permission')
         <button class="btn btn-success btn-sm" type="button">
             <label for="permissionModal"><i class="fa-solid fa-plus"></i> Create</label>
         </button>
+        @endcan
     </div>
 
 
@@ -24,7 +26,7 @@
             <tr>
                 <th>SN</th>
                 <x-table.headcell wire:click="sortBy('title')" sort="true" :order="$sortColumn === 'title' ? $sortOrder : null">Title</x-table.headcell>
-                <x-table.headcell wire:click="sortBy('description')" sort="true" :order="$sortColumn === 'description' ? $sortOrder : null">Description</x-table.headcell>
+                <x-table.headcell wire:click="sortBy('status')" sort="true" :order="$sortColumn === 'status' ? $sortOrder : null">Status</x-table.headcell>
                 <x-table.headcell>Actions</x-table.headcell>
             </tr>
         </x-table.head>
@@ -33,15 +35,21 @@
             @foreach($permissions as $permission)
                 <tr>
                     <td>{{ $i++ }}</td>
-                    <td>{{ $permission->title }}</td>
-                    <td>{{ $permission->description }}</td>
+                    <td>{{ $permission->name }}</td>
+                    <td>
+                        <span class="text-{{$permission->status ? 'success' : 'error'}}">{{ $permission->status ? 'Active' : 'Inactive' }}</span>
+
+                    </td>
                     <td>
                         <div class="flex gap-1">
+                            @can('update_permission')
                             <button  class="btn btn-ghost text-primary" >
                                 <label for="permissionModal" wire:click="edit('{{ $permission->id }}')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </label>
                             </button>
+                            @endcan
+                            @can('delete_permission')
                             <button type="button" class="btn btn-ghost text-red-500" x-data=""
                                     @click="
                                         Swal.fire({
@@ -59,6 +67,7 @@
                             >
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
+                                @endcan
                         </div>
                     </td>
                 </tr>

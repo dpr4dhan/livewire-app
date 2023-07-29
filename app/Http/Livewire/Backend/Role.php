@@ -8,6 +8,7 @@ use App\Models\RoleModel;
 use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +21,7 @@ use Livewire\WithPagination;
 
 class Role extends Component
 {
-    use WithPagination;
+    use WithPagination, AuthorizesRequests;
 
     protected $listeners = ['deleteRole' => 'deleteRole'];
 
@@ -28,10 +29,10 @@ class Role extends Component
     public string $roleId = '';
 
     public string $title = '';
-    public string $description = '';
+    public bool $status = false;
 
     public string $search = '';
-    public string $sortColumn = 'title';
+    public string $sortColumn = 'name';
     public string $sortOrder = 'asc';
 
     public array $assignedPermissions = [];
@@ -45,7 +46,7 @@ class Role extends Component
     public function resetFormData(): void
     {
         $this->mode = 'create';
-        $this->title = $this->description = '';
+        $this->title = $this->status = '';
         $this->assignedPermissions = [];
     }
 
@@ -58,13 +59,13 @@ class Role extends Component
     {
 
         $this->validate([
-            'title' => 'required',
+            'title' => 'required|unique:roles,name',
          ]);
 
         try{
             $role = new RoleModel();
-            $role->title = $this->title;
-            $role->description = $this->description;
+            $role->name = $this->title;
+            $role->status = $this->status ? 1 : 0;
             $role->save();
 
             $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Role created successfully']);
@@ -82,8 +83,8 @@ class Role extends Component
      */
     public function edit(RoleModel $role): void
     {
-        $this->title = $role->title;
-        $this->description = $role->description;
+        $this->title = $role->name;
+        $this->status = $role->status;
         $this->roleId = $role->id;
         $this->mode = 'edit';
     }
@@ -96,12 +97,12 @@ class Role extends Component
     public function update(RoleModel $role) :void
     {
         $this->validate([
-            'title' => 'required'
+            'title' => 'required|unique:role,name,'.$role->id
         ]);
 
         try{
-            $role->title = $this->title;
-            $role->description = $this->description;
+            $role->name = $this->title;
+            $role->status = $this->status ? 1 : 0;
             $role->save();
 
             $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Role updated successfully']);
@@ -131,27 +132,20 @@ class Role extends Component
     public function fetchAssignedPermissions(RoleModel $role) :void
     {
         $this->roleId = $role->id;
-        $this->assignedPermissions = $role->assignedPermissions->pluck('id')->toArray();
-        $this->permissions = PermissionModel::get();
+        $this->assignedPermissions = $role->permissions->pluck('id')->toArray();
+        $this->permissions = PermissionModel::active()->get();
     }
 
     public function assignPermission(RoleModel $role): void
     {
         try{
+
             DB::beginTransaction();
-            $role->roleHasPermissions()->delete();
+            $assignedPermissions = array_map(function($k){
+                return PermissionModel::find($k);
+            }, $this->assignedPermissions);
 
-            $permissionData = [];
-            foreach($this->assignedPermissions as $permission)
-            {
-                $permissionData[] = [
-                                    'id' => Str::uuid(),
-                                    'role_id' => $role->id,
-                                    'permission_id' => $permission
-                                    ];
-            }
-            RoleHasPermissionModel::insert($permissionData);
-
+            $role->syncPermissions($assignedPermissions);
             DB::commit();
             $this->emit('notify-success','Permission assigned successfully');
         }catch(\Exception $ex){
@@ -185,7 +179,7 @@ class Role extends Component
      */
     public function render(): View
     {
-
+        $this->authorize('view_role_list');
         $roles = RoleModel::when($this->search,  function( Builder $query, string $search){
             return $query->where('title', 'like', '%'.$search.'%');
         })->orderBy($this->sortColumn, $this->sortOrder)->paginate(10);

@@ -4,9 +4,11 @@
     </div>
     <div class="flex justify-between">
         <h2 class="card-title">User List</h2>
+        @can('create_new_user')
         <button class="btn btn-success btn-sm" type="button">
             <label for="userModal"><i class="fa-solid fa-plus"></i> Create</label>
         </button>
+        @endcan
     </div>
 
 
@@ -46,12 +48,22 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex justify-center gap-1">
+                        <div class="flex justify-start space-x-1">
+                            @can('assign_user_roles')
+                            <button wire:click="fetchAssignedRoles('{{ $user->id }}')" class="btn btn-primary btn-sm mt-2" type="button">
+                                <label for="assignRoleModal">
+                                    Roles
+                                </label>
+                            </button>
+                            @endcan
+                            @can('update_user')
                             <button  class="btn btn-ghost text-primary" >
                                 <label for="userModal" wire:click="editUser('{{ $user->id }}')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </label>
                             </button>
+                            @endcan
+                            @can('delete_user')
                             <button type="button" class="btn btn-ghost text-red-500" x-data=""
                                     @click="
                                         Swal.fire({
@@ -69,6 +81,7 @@
                             >
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
+                            @endcan
                         </div>
                     </td>
                 </tr>
@@ -81,4 +94,5 @@
     </div>
 
     @include('livewire.backend.user.form')
+    @include('livewire.backend.user.roles')
 </div>

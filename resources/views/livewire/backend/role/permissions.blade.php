@@ -10,7 +10,7 @@
                     @foreach($permissions as $permission)
                         <li>
                             <label class="cursor-pointer label">
-                                <span class="label-text">{{$permission->title}}</span>
+                                <span class="label-text">{{$permission->name}}</span>
                                 <input wire:model="assignedPermissions" type="checkbox"   class="checkbox checkbox-info" value="{{ $permission->id }}"/>
                             </label>
                         </li>

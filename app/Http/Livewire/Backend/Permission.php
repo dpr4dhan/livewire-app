@@ -4,14 +4,16 @@ namespace App\Http\Livewire\Backend;
 
 use App\Models\PermissionModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Spatie\Permission\Guard;
 
 class Permission extends Component
 {
-    use WithPagination;
+    use WithPagination, AuthorizesRequests;
 
     protected $listeners = ['deletePermission' => 'delete'];
 
@@ -19,10 +21,10 @@ class Permission extends Component
     public string $permissionId = '';
 
     public string $title = '';
-    public string $description = '';
+    public bool $status = false;
 
     public string $search = '';
-    public string $sortColumn = 'title';
+    public string $sortColumn = 'name';
     public string $sortOrder = 'asc';
 
     /**
@@ -32,7 +34,7 @@ class Permission extends Component
     public function resetFormData(): void
     {
         $this->mode = 'create';
-        $this->title = $this->description = '';
+        $this->title = $this->status = '';
     }
 
     /**
@@ -48,15 +50,18 @@ class Permission extends Component
         ]);
 
         try{
-            $permission = new PermissionModel();
-            $permission->title = $this->title;
-            $permission->description = $this->description;
-            $permission->save();
+            PermissionModel::create(
+                [
+                    'name' => $this->title,
+                    'status' => $this->status ? 1 : 0,
+                ]
+            );
 
             $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Permission created successfully']);
 
         }catch(\Exception $ex){
             Log::error($ex);
+            dd($ex->getMessage());
             $this->emit('notify-error', 'Error occurred while saving');
         }
     }
@@ -68,8 +73,8 @@ class Permission extends Component
      */
     public function edit(PermissionModel $permission): void
     {
-        $this->title = $permission->title;
-        $this->description = $permission->description;
+        $this->title = $permission->name;
+        $this->status = $permission->status;
         $this->permissionId = $permission->id;
         $this->mode = 'edit';
     }
@@ -86,8 +91,8 @@ class Permission extends Component
         ]);
 
         try{
-            $permission->title = $this->title;
-            $permission->description = $this->description;
+            $permission->name = $this->title;
+            $permission->status = $this->status ?  1 : 0;
             $permission->save();
 
             $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Permission updated successfully']);
@@ -133,7 +138,7 @@ class Permission extends Component
      */
     public function render(): View
     {
-
+        $this->authorize('view_permission_list');
         $permissions = PermissionModel::when($this->search,  function( Builder $query, string $search){
             return $query->where('title', 'like', '%'.$search.'%');
         })->orderBy($this->sortColumn, $this->sortOrder)->paginate(10);

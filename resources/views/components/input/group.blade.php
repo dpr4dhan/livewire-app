@@ -3,11 +3,12 @@
     'for',
     'error' => false,
     'helpText' => false,
-    'className' => false
+    'className' => false,
+    'labelClassName' => false
 ])
 
 <div class="form-control {{ $className ?: '' }}">
-    <label class="label" for="{{ $for }}">
+    <label class="label {{ $labelClassName ?: '' }}" for="{{ $for }}">
         <span class="label-text">{{ $label }}</span>
     </label>
     {{ $slot }}
