@@ -1,18 +1,21 @@
 <!-- Modal Content -->
 <input type="checkbox" id="userModal" class="modal-toggle"
-       x-init="@this.on('notify-saved', (res) => {
-       if(res.status){
-            notyf.success(res.msg);
-       }else{
-            notyf.error(res.msg);
-       }
-        document.getElementById('closeBtn').click();
-       })"
+   x-init="
+            Livewire.on('notify-saved', (res) => {
+            if(res.status){
+                notyf.success(res.msg);
+            }else{
+                notyf.error(res.msg);
+            }
+            document.getElementById('closeBtn').click();
+            })
+          "
 />
 <div class="modal">
     <div class="modal-box w-11/12 max-w-5xl">
         <h3 class="font-bold text-lg">{{ ucfirst($mode)}} User </h3>
-        <form wire:submit.prevent="{{ $mode === 'edit' ? 'updateUser("'. $userId.'")' : 'storeUser'}}">
+        <form wire:submit="{{ $mode === 'edit' ? 'updateUser("'. $userId.'")' : 'storeUser'}}">
+
             <div class="py-4">
                 <div class="flex grid grid-cols-1 md:grid-cols-2 md:gaps-2">
                     <div>

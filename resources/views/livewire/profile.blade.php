@@ -3,29 +3,29 @@
         <h2 class="card-title">Profile</h2>
         <div>
         </div>
-        <form wire:submit.prevent="save">
+        <form wire:submit="save">
             <div class="grid grid-cols-1 md:grid-cols-2 md:gap-2">
 
                 <x-input.group className="w-full max-w-xs" label="Username" for="username" :error="$errors->first('username')">
-                    <x-input.text wire:model="username" id="username" placeholder="Enter username"/>
+                    <x-input.text wire:model.live="username" id="username" placeholder="Enter username"/>
                 </x-input.group>
                 <x-input.group className="w-full max-w-xs" label="Birthday" for="birthday" :error="$errors->first('birthday')">
-                    <x-input.date wire:model="birthday" id="birthday" placeholder="YYYY-MM-DD"/>
+                    <x-input.date wire:model.live="birthday" id="birthday" placeholder="YYYY-MM-DD"/>
                 </x-input.group>
 
 
             </div>
             <div class="grid grid-cols-1">
                 <x-input.group className="w-full" label="About" for="about" :error="$errors->first('about')" help-text="Write about yourself...">
-                    <x-input.rich-text wire:model.lazy="about" id="about" placeholder="Write about yourself .." :initialValue="$about "/>
+                    <x-input.rich-text wire:model.blur="about" id="about" placeholder="Write about yourself .." :initialValue="$about "/>
                 </x-input.group>
 
                 <x-input.group className="w-2/4 max-w-xs" label="Photo" for="photo" :error="$errors->first('newAvatar')">
-                    <x-input.file wire:model="newAvatar" id="newAvatar" className="file-input-primary" :tempFile="$newAvatar"/>
+                    <x-input.file wire:model.live="newAvatar" id="newAvatar" className="file-input-primary" :tempFile="$newAvatar"/>
 
                 </x-input.group>
 
-                <x-input.filepond wire:model="newAvatars" id="newAvatars" multiple/>
+                <x-input.filepond wire:model.live="newAvatars" id="newAvatars" multiple/>
             </div>
 
 

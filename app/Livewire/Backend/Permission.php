@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Backend;
+namespace App\Livewire\Backend;
 
 use App\Models\PermissionModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Guard;
@@ -15,7 +16,6 @@ class Permission extends Component
 {
     use WithPagination, AuthorizesRequests;
 
-    protected $listeners = ['deletePermission' => 'delete'];
 
     public string $mode = 'create';
     public string $permissionId = '';
@@ -57,12 +57,11 @@ class Permission extends Component
                 ]
             );
 
-            $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Permission created successfully']);
+            $this->dispatch('notify-saved', status: true, msg: 'Permission created successfully');
 
         }catch(\Exception $ex){
             Log::error($ex);
-            dd($ex->getMessage());
-            $this->emit('notify-error', 'Error occurred while saving');
+            $this->dispatch('notify-error', msg:'Error occurred while saving');
         }
     }
 
@@ -95,22 +94,23 @@ class Permission extends Component
             $permission->status = $this->status ?  1 : 0;
             $permission->save();
 
-            $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Permission updated successfully']);
+            $this->dispatch('notify-saved', status: true, msg: 'Permission updated successfully');
 
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while updating');
+            $this->dispatch('notify-error', msg: 'Error occurred while updating');
         }
     }
 
+    #[On('deletePermission')]
     public function delete(PermissionModel $permission) :void
     {
         try{
             $permission->delete();
-            $this->emit('notify-success','Permission deleted successfully');
+            $this->dispatch('notify-success',msg: 'Permission deleted successfully');
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while deleting permission');
+            $this->dispatch('notify-error', msg: 'Error occurred while deleting permission');
         }
     }
 
@@ -140,7 +140,7 @@ class Permission extends Component
     {
         $this->authorize('view_permission_list');
         $permissions = PermissionModel::when($this->search,  function( Builder $query, string $search){
-            return $query->where('title', 'like', '%'.$search.'%');
+            return $query->where('name', 'like', '%'.$search.'%');
         })->orderBy($this->sortColumn, $this->sortOrder)->paginate(10);
         return view('livewire.backend.permission.list', compact('permissions'))->extends('layouts.app');
     }

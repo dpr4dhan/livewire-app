@@ -2,7 +2,7 @@
     <h2 class="card-title">Transaction List</h2>
     <div class="right-end-px">
         <x-input.group className="w-full max-w-xs" label="" for="search">
-            <x-input.text wire:model="search" id="search" placeholder="Enter search"/>
+            <x-input.text wire:model.live="search" id="search" placeholder="Enter search"/>
         </x-input.group>
     </div>
 

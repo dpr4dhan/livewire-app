@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.19/dist/sweetalert2.min.css">
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{{--    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>--}}
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -38,14 +38,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.19/dist/sweetalert2.all.min.js"></script>
     @stack('scripts')
     <script>
-        const notyf = new Notyf({duration:3000,position:{'x': 'right', 'y':'top'}, dismissible: true});
+        if(typeof notyf === 'undefined')
+        {
+            const notyf = new Notyf({duration:3000,position:{'x': 'right', 'y':'top'}, dismissible: true});
+        }
 
-        Livewire.on('notify-success', (msg) => {
-            notyf.success(msg);
+        Livewire.on('notify-success', (res) => {
+            notyf.success(res.msg);
         })
 
-        Livewire.on('notify-error', (msg) => {
-            notyf.error(msg);
+        Livewire.on('notify-error', (res) => {
+            notyf.error(res.msg);
         })
     </script>
 </body>

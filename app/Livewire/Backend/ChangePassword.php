@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Backend;
+namespace App\Livewire\Backend;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;

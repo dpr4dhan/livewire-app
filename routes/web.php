@@ -1,15 +1,15 @@
 <?php
 
-use App\Http\Livewire\Auth\Login;
-use App\Http\Livewire\Auth\Logout;
-use App\Http\Livewire\Auth\Register;
-use App\Http\Livewire\Backend\ChangePassword;
-use App\Http\Livewire\Backend\Permission;
-use App\Http\Livewire\Backend\Role;
-use App\Http\Livewire\Backend\User;
-use App\Http\Livewire\Dashboard;
-use App\Http\Livewire\Profile;
-use App\Http\Livewire\Transaction;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Logout;
+use App\Livewire\Auth\Register;
+use App\Livewire\Backend\ChangePassword;
+use App\Livewire\Backend\Permission;
+use App\Livewire\Backend\Role;
+use App\Livewire\Backend\User;
+use App\Livewire\Dashboard;
+use App\Livewire\Profile;
+use App\Livewire\Transaction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,5 +42,6 @@ Route::middleware('auth')->group(function() {
 Route::middleware('guest')->group(function() {
     Route::get('/register', Register::class)->name('register');
     Route::get('/login', Login::class)->name('login');
+//    Route::post('/login', Login::class)->name('login');
 });
 

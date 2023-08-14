@@ -3,7 +3,7 @@
 <div class="modal">
     <div class="modal-box">
         <h3 class="font-bold text-lg">Assign Permissions </h3>
-        <form wire:submit.prevent="assignPermission('{{ $roleId }}')">
+        <form wire:submit="assignPermission('{{ $roleId }}')">
             <div class="py-4">
                 <ul>
                     @if(!empty($permissions))
@@ -11,7 +11,7 @@
                         <li>
                             <label class="cursor-pointer label">
                                 <span class="label-text">{{$permission->name}}</span>
-                                <input wire:model="assignedPermissions" type="checkbox"   class="checkbox checkbox-info" value="{{ $permission->id }}"/>
+                                <input wire:model.live="assignedPermissions" type="checkbox"   class="checkbox checkbox-info" value="{{ $permission->id }}"/>
                             </label>
                         </li>
                     @endforeach

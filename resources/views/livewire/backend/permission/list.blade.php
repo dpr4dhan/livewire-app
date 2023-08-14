@@ -15,7 +15,7 @@
     <div class="grid grid-cols-6 gap-4">
         <div class="col-end-10 col-span-2">
             <x-input.group className="w-full max-w-xs" label="" for="search">
-                <x-input.text wire:model="search" id="search" placeholder="Enter search" className="input-sm"/>
+                <x-input.text wire:model.live="search" id="search" placeholder="Enter search" className="input-sm"/>
             </x-input.group>
         </div>
 
@@ -60,7 +60,7 @@
                                           showCancelButton: true
                                         }).then(function(evt){
                                             if(evt.isConfirmed){
-                                                Livewire.emit('deletePermission', '{{ $permission->id}}');
+                                                Livewire.dispatch('deletePermission', {permission: '{{ $permission->id}}'});
                                             }
                                         });
                                     "

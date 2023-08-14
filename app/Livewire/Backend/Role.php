@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Backend;
+namespace App\Livewire\Backend;
 
 use App\Models\PermissionModel;
 use App\Models\RoleHasPermissionModel;
@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,7 +24,6 @@ class Role extends Component
 {
     use WithPagination, AuthorizesRequests;
 
-    protected $listeners = ['deleteRole' => 'deleteRole'];
 
     public string $mode = 'create';
     public string $roleId = '';
@@ -68,11 +68,11 @@ class Role extends Component
             $role->status = $this->status ? 1 : 0;
             $role->save();
 
-            $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Role created successfully']);
+            $this->dispatch('notify-saved', status :true, msg: 'Role created successfully');
 
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while saving');
+            $this->dispatch('notify-error', msg:'Error occurred while saving');
         }
     }
 
@@ -97,7 +97,7 @@ class Role extends Component
     public function update(RoleModel $role) :void
     {
         $this->validate([
-            'title' => 'required|unique:role,name,'.$role->id
+            'title' => 'required|unique:roles,name,'.$role->id
         ]);
 
         try{
@@ -105,22 +105,23 @@ class Role extends Component
             $role->status = $this->status ? 1 : 0;
             $role->save();
 
-            $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'Role updated successfully']);
+            $this->dispatch('notify-saved', status:true, msg:'Role updated successfully');
 
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while updating');
+            $this->dispatch('notify-error', msg:'Error occurred while updating');
         }
     }
 
+    #[On('deleteRole')]
     public function deleteRole(RoleModel $role) :void
     {
         try{
             $role->delete();
-            $this->emit('notify-success','Role deleted successfully');
+            $this->dispatch('notify-success',msg:'Role deleted successfully');
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while deleting role');
+            $this->dispatch('notify-error', msg:'Error occurred while deleting role');
         }
     }
 
@@ -147,12 +148,12 @@ class Role extends Component
 
             $role->syncPermissions($assignedPermissions);
             DB::commit();
-            $this->emit('notify-success','Permission assigned successfully');
+            $this->dispatch('notify-success', msg:'Permission assigned successfully');
         }catch(\Exception $ex){
             dd($ex->getMessage());
             DB::rollBack();
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while assigning permissions');
+            $this->dispatch('notify-error', msg:'Error occurred while assigning permissions');
         }
     }
 
@@ -181,7 +182,7 @@ class Role extends Component
     {
         $this->authorize('view_role_list');
         $roles = RoleModel::when($this->search,  function( Builder $query, string $search){
-            return $query->where('title', 'like', '%'.$search.'%');
+            return $query->where('name', 'like', '%'.$search.'%');
         })->orderBy($this->sortColumn, $this->sortOrder)->paginate(10);
         return view('livewire.backend.role.list', compact('roles'))->extends('layouts.app');
     }

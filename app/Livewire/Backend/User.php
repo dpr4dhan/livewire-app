@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Backend;
+namespace App\Livewire\Backend;
 
 use App\Models\RoleModel;
 use App\Models\Transaction as TransactionModel;
@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,7 +24,7 @@ class User extends Component
 {
     use WithPagination, AuthorizesRequests;
 
-    protected $listeners = ['deleteUser' => 'deleteUser'];
+//    protected $listeners = ['deleteUser' => 'deleteUser'];
 
     public string $mode = 'create';
     public string $userId = '';
@@ -76,11 +77,11 @@ class User extends Component
             $user->password = Hash::make($this->password);
             $user->save();
 
-            $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'User created successfully']);
+            $this->dispatch('notify-saved', status:true, msg:'User created successfully');
 
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while saving');
+            $this->dispatch('notify-error', msg:'Error occurred while saving');
         }
     }
 
@@ -117,22 +118,23 @@ class User extends Component
             $user->email = $this->email;
             $user->save();
 
-            $this->emitSelf('notify-saved', ['status' => true, 'msg' => 'User updated successfully']);
+            $this->dispatch('notify-saved', status: true, msg: 'User updated successfully');
 
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while updating');
+            $this->dispatch('notify-error', msg:'Error occurred while updating');
         }
     }
 
+    #[On('deleteUser')]
     public function deleteUser(UserModel $user) :void
     {
         try{
             $user->delete();
-            $this->emit('notify-success','User deleted successfully');
+            $this->dispatch('notify-success', msg: 'User deleted successfully');
         }catch(\Exception $ex){
             Log::error($ex);
-            $this->emit('notify-error', 'Error occurred while deleting user');
+            $this->dispatch('notify-error', msg: 'Error occurred while deleting user');
         }
     }
 
@@ -155,12 +157,12 @@ class User extends Component
             $user->syncRoles( $assignedRoles);
 
             DB::commit();
-            $this->emit('notify-success', 'Successfully assigned roles');
+            $this->dispatch('notify-success', msg:'Successfully assigned roles');
         }catch(\Exception $ex)
         {
             Log::error($ex);
             DB::rollBack();
-            $this->emit('notify-error', 'Error occurred while assigning roles');
+            $this->dispatch('notify-error', msg:'Error occurred while assigning roles');
         }
     }
 

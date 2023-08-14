@@ -1,6 +1,6 @@
 <div class="card-body">
     <div>
-        @include('includes.message')
+{{--        @include('includes.message')--}}
     </div>
     <div class="flex justify-between">
         <h2 class="card-title">User List</h2>
@@ -15,7 +15,7 @@
     <div class="grid grid-cols-6 gap-4">
         <div class="col-end-10 col-span-2">
             <x-input.group className="w-full max-w-xs" label="" for="search">
-                <x-input.text wire:model="search" id="search" placeholder="Enter search" className="input-sm"/>
+                <x-input.text wire:model.live="search" id="search" placeholder="Enter search" className="input-sm"/>
             </x-input.group>
         </div>
 
@@ -74,7 +74,7 @@
                                           showCancelButton: true
                                         }).then(function(evt){
                                             if(evt.isConfirmed){
-                                                Livewire.emit('deleteUser', '{{ $user->id}}');
+                                               Livewire.dispatch('deleteUser', { user: '{{ $user->id}}'});
                                             }
                                         });
                                     "
